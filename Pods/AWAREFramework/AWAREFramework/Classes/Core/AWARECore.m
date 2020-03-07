@@ -51,9 +51,9 @@ static AWARECore * sharedCore;
         NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
         if (![userDefaults boolForKey:@"aware_inited"]) {
             [study setDebug:NO];
-            [study setAutoDBSyncOnlyWifi:YES];
-            [study setAutoDBSyncOnlyBatterChargning:YES];
-            [study setAutoDBSyncIntervalWithMinutue:60];
+            [study setAutoDBSyncOnlyWifi:NO];
+            [study setAutoDBSyncOnlyBatterChargning:NO];
+            [study setAutoDBSyncIntervalWithMinutue:5];
             [study setAutoDBSync:YES];
             [study setMaximumByteSizeForDBSync:1000*100];
             [study setMaximumNumberOfRecordsForDBSync:1000];
