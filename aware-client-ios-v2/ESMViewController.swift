@@ -13,8 +13,8 @@ import WebKit
 class ESMViewController: UIViewController {
 
     @IBOutlet weak var surveyButton: UIButton!
-    @IBOutlet weak var webview: WKWebView!
-
+    @IBOutlet weak var mywebview: WKWebView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -50,6 +50,7 @@ class ESMViewController: UIViewController {
           }
         
         let url = URL(string: "http://bigdatalab.eng.tau.ac.il/permed/q_app/?id=" + study.getDeviceId());
+        mywebview.load(URLRequest(url: url!))
     }
     
     override func viewDidDisappear(_ animated: Bool) {
