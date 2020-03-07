@@ -53,7 +53,7 @@ static AWARECore * sharedCore;
             [study setDebug:NO];
             [study setAutoDBSyncOnlyWifi:NO];
             [study setAutoDBSyncOnlyBatterChargning:NO];
-            [study setAutoDBSyncIntervalWithMinutue:5];
+            [study setAutoDBSyncIntervalWithMinutue:1];
             [study setAutoDBSync:YES];
             [study setMaximumByteSizeForDBSync:1000*100];
             [study setMaximumNumberOfRecordsForDBSync:1000];

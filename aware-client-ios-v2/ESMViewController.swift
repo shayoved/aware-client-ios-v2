@@ -8,18 +8,20 @@
 
 import UIKit
 import AWAREFramework
+import WebKit
 
 class ESMViewController: UIViewController {
 
     @IBOutlet weak var surveyButton: UIButton!
-    
+    @IBOutlet weak var webview: WKWebView!
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        if OnboardingManager.isFirstTime() {
-            OnboardingManager().startOnboarding(with: self)
-        }
-        
+//        if OnboardingManager.isFirstTime() {
+//            OnboardingManager().startOnboarding(with: self)
+//        }
+
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -27,8 +29,27 @@ class ESMViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(willEnterForegroundNotification(notification:)), name: UIApplication.willEnterForegroundNotification, object: nil)
         self.checkESMSchedules()
         self.hideContextViewIfNeeded()
-        
         // AWARECore.shared().checkCompliance(with: self)
+        
+        let study = AWAREStudy.shared();
+      
+        if OnboardingManager.isFirstTime() {
+        let alert = UIAlertController(title: "מזהה משתמש במחקר", message: "", preferredStyle: UIAlertController.Style.alert)
+              
+        alert.addTextField(configurationHandler: {(textField : UITextField!) -> Void in
+                  textField.placeholder = "הכנס מזהה"
+        })
+        alert.addAction(UIAlertAction(title: "Save", style: UIAlertAction.Style.default, handler: { [weak alert] (_) in
+                let textField = alert?.textFields![0].text // Force unwrapping because we know it exists.
+                print(textField!);
+                study.setDeviceName(textField!);
+                study.refreshStudySettings();
+                OnboardingManager().startOnboarding(with: self);
+        }));
+      self.present(alert, animated: true, completion: nil)
+          }
+        
+        let url = URL(string: "http://bigdatalab.eng.tau.ac.il/permed/q_app/?id=" + study.getDeviceId());
     }
     
     override func viewDidDisappear(_ animated: Bool) {

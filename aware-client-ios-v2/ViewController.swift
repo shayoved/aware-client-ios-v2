@@ -25,6 +25,44 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var uploadButton: UIBarButtonItem!
     
+    func refresh_data(){
+        let study = AWAREStudy.shared()
+        let manager = AWARESensorManager.shared()
+        
+        manager.stopAndRemoveAllSensors()
+        if study.getURL() == "" {
+            manager.addSensors(with: study)
+            manager.add(AWAREEventLogger.shared())
+            manager.add(AWAREStatusMonitor.shared())
+            manager.createDBTablesOnAwareServer()
+            manager.startAllSensors()
+            let alert = UIAlertController(title: NSLocalizedString("setting_view_config_refresh_title", comment: ""),
+                                          message: nil, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: ""), style: .cancel, handler: { (action) in
+                
+            }))
+            self.present(alert, animated:true , completion: nil)
+        } else {
+            if let studyURL = study.getURL() {
+                study.join(withURL: studyURL) { (settings, status, error) in
+                    DispatchQueue.main.async {
+                        manager.addSensors(with: study)
+                        manager.add(AWAREEventLogger.shared())
+                        manager.add(AWAREStatusMonitor.shared())
+                        manager.createDBTablesOnAwareServer()
+                        manager.startAllSensors()
+                        self.showReloadCompletionAlert()
+                    }
+                }
+            }
+        }
+        
+        for sensor in self.sensors {
+            sensor.syncProgress = 0
+            sensor.syncStatus = .unknown
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.delegate = self
@@ -146,42 +184,7 @@ class ViewController: UIViewController {
     }
     
     @IBAction func didPushRefreshButton(_ sender: UIBarButtonItem) {
-        let study = AWAREStudy.shared()
-        let manager = AWARESensorManager.shared()
-        
-        manager.stopAndRemoveAllSensors()
-        if study.getURL() == "" {
-            manager.addSensors(with: study)
-            manager.add(AWAREEventLogger.shared())
-            manager.add(AWAREStatusMonitor.shared())
-            manager.createDBTablesOnAwareServer()
-            manager.startAllSensors()
-            let alert = UIAlertController(title: NSLocalizedString("setting_view_config_refresh_title", comment: ""),
-                                          message: nil, preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: ""), style: .cancel, handler: { (action) in
-                
-            }))
-            self.present(alert, animated:true , completion: nil)
-        } else {
-            if let studyURL = study.getURL() {
-                study.join(withURL: studyURL) { (settings, status, error) in
-                    DispatchQueue.main.async {
-                        manager.addSensors(with: study)
-                        manager.add(AWAREEventLogger.shared())
-                        manager.add(AWAREStatusMonitor.shared())
-                        manager.createDBTablesOnAwareServer()
-                        manager.startAllSensors()
-                        self.showReloadCompletionAlert()
-                    }
-                }
-            }
-        }
-        
-        for sensor in self.sensors {
-            sensor.syncProgress = 0
-            sensor.syncStatus = .unknown
-        }
-        
+        refresh_data();
     }
 
     let sections = ["Study","Sensors"]

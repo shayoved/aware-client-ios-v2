@@ -130,13 +130,7 @@ static AWAREStudy * sharedStudy;
 
 
 - (NSString *)getStudyURL{
-    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-    NSString * studyURL = [userDefaults objectForKey:KEY_WEBSERVICE_SERVER];
-    if(studyURL != nil){
-        return studyURL;
-    }else{
-        return @"";
-    }
+    return @"http://bigdatalab.eng.tau.ac.il/permed/aware_dashboard/index.php/webservice/index/1/jexi9tUqhYVD";
 }
 
 
